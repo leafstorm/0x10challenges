@@ -96,6 +96,17 @@
         asmEditor.getSession().setUseSoftTabs(true);
 
         var asmTextarea = $(document.getElementById("assembly")).hide();
+
+        {% if submission %}
+            localStorage.setItem('challenge-{{ challenge.id }}-last',
+                                 asmTextarea.val());
+        {% elif not form.assembly.data %}
+            var last = localStorage.getItem('challenge-{{ challenge.id }}-last');
+            if (last) {
+                asmTextarea.val(last);
+            }
+        {% endif %}
+
         asmEditor.getSession().setValue(asmTextarea.val());
         asmEditor.getSession().on('change', function () {
             asmTextarea.val(asmEditor.getSession().getValue());
