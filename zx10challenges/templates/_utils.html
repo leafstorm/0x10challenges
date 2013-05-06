@@ -1,0 +1,32 @@
+{% macro link_to (text, endpoint) -%}
+    <a href="{{ url_for(endpoint, **kwargs) }}">{{ text }}</a>
+{%- endmacro %}
+
+
+{% macro link_button (type, text, endpoint) -%}
+    <a class="btn{% if type is not none %} btn-{{ type }}{% endif %}"
+       href="{{ url_for(endpoint, **kwargs) }}">{{ text }}</a>
+{%- endmacro %}
+
+
+{% macro form_tag (endpoint, method='POST') -%}
+    <form action="{{ url_for(endpoint, **kwargs) }}" 
+          method="{{ method }}">
+        {{ caller () }}
+    </form>
+{%- endmacro %}
+
+
+{% macro field_errors (field) -%}
+    {% for error in field.errors %}
+        <p class="text-error">{{ error }}</p>
+    {% endfor %}
+{%- endmacro %}
+
+
+{% macro submit_button (type, text) -%}
+    <button type="submit"
+            class="btn{% if type is not none %} btn-{{ type }}{% endif %}">
+        {{ text }}
+    </button>
+{%- endmacro %}

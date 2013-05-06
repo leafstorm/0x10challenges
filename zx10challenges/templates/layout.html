@@ -1,0 +1,54 @@
+<!doctype html>
+<html>
+<head>
+    <title>0x10challenges - {{ title }}</title>
+    <meta charset="utf-8">
+    <!--[if lt IE 9]>
+    <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap-cyborg.min.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap-responsive.min.css') }}">
+    {% block head %}{% endblock head %}
+</head>
+<body>
+    <div class="container">
+        <div class="navbar">
+            <div class="navbar-inner">
+                <a class="brand" href="{{ url_for('challenges.index') }}">
+                    0x10<sup>challenges</sup>
+                </a>
+                <ul class="nav">
+                    <li><a href="#">Challenges</a></li>
+                    <li><a href="#">Records</a></li>
+                    <li><a href="#">Documentation</a></li>
+                </ul>
+            </div>
+        </div>
+
+        {% with flashes = get_flashed_messages(with_categories=True) -%}
+        {% if flashes -%}
+        <div id="flashes offset2 span8">
+        {%- for category, message in flashes %}
+            <div class="alert{% if category != 'warning' %} alert-{{category}}{% endif %}">
+                {{ message }}
+            </p>
+        {%- endfor %}
+        </div>
+        {%- endif %}
+        {%- endwith %}
+
+        {% block body %}
+        {% endblock body %}
+
+        <footer>
+            <a href="http://flask.pocoo.org/">
+                <img src="http://flask.pocoo.org/static/badges/powered-by-flask-s.png"
+                    border="0" alt="powered by Flask" title="powered by Flask">
+            </a>
+        </footer>
+    </div>
+
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+    <script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
+    {% block scripts %}{% endblock scripts %}
+</body>

@@ -1,0 +1,92 @@
+{% extends "layout.html" %}
+{% from "_utils.html" import form_tag, field_errors, submit_button %}
+
+{% set title = challenge.title %}
+
+{% block body %}
+    <h1>{{ challenge.title }}</h1>
+
+    <p class="lead">{{ challenge.objective }}</p>
+
+    <div class="row">
+        <div class="span5">
+            <!-- Spec & Results -->
+            <ul class="nav nav-tabs">
+                <li{% if submission is none %} class="active"{% endif %}>
+                    <a href="#challenge-spec" data-toggle="tab">Spec</a>
+                </li>
+                <li{% if submission is not none %} class="active"{% endif %}>
+                    <a href="#challenge-results" data-toggle="tab">Results</a>
+                </li>
+            </ul>
+
+            <div class="tab-content">
+                <div id="challenge-spec"
+                     class="tab-pane{% if submission is none %} active{% endif %}">
+                    {{ challenge.spec|markdown }}
+
+                    <p>
+                        <strong>Your submission will be evaluated on:</strong>
+                    </p>
+
+                    <ul>
+                        {% for metric in challenge.metrics %}
+                            <li>{{ metric.name }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+
+                <div id="challenge-results"
+                     class="tab-pane{% if submission is not none %} active{% endif %}">
+                    {% if submission is none %}
+                        <p>
+                            Once you've finished your code, click
+                            &ldquo;Submit&rdquo; to see the results.
+                        </p>
+                    {% else %}
+                        {% include "attempt-result.html" %}
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <div class="span7">
+            <!-- Assembly Editor -->
+
+            {% call form_tag('challenges.attempt', id=challenge.id) %}
+                {{ form.hidden_tag() }}
+
+                {{ form.assembly }}
+                <div id="assembly-editor" style="width: 100%; height: 20em;"></div>
+
+                {{ field_errors(form.assembly) }}
+
+                {{ form.notes.label }}
+                {{ form.notes(rows=5, style="width: 100%;") }}
+
+                {{ field_errors(form.notes) }}
+
+                <div class="form-actions">
+                    {{ submit_button('primary', "Submit") }}
+                </div>
+            {% endcall %}
+        </div>
+    </div>
+{% endblock body %}
+
+
+{% block scripts %}
+    <script src="{{ url_for('static', filename='js/ace/ace.js') }}"></script>
+    <script>
+        var asmEditor = ace.edit("assembly-editor");
+        asmEditor.setTheme("ace/theme/twilight");
+        asmEditor.getSession().setTabSize(4);
+        asmEditor.getSession().setUseSoftTabs(true);
+
+        var asmTextarea = $(document.getElementById("assembly")).hide();
+        asmEditor.getSession().setValue(asmTextarea.val());
+        asmEditor.getSession().on('change', function () {
+            asmTextarea.val(asmEditor.getSession().getValue());
+        });
+    </script>
+{% endblock scripts %}

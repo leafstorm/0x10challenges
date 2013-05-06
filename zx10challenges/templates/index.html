@@ -1,0 +1,35 @@
+{% extends "layout.html" %}
+{% from "_utils.html" import link_button %}
+
+{% set title = "Challenges" %}
+
+{% block body %}
+    <div class="hero-unit">
+        <h1>0x10<sup>challenges</sup></h1>
+        <p>
+            Challenges to improve your assembly programming skills
+        </p>
+    </div>
+
+    <h2>Available Challenges</h2>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th colspan="2">Objective</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for challenge in challenges %}
+                <tr>
+                    <td class="lead">{{ challenge.title }}</td>
+                    <td>{{ challenge.objective }}</td>
+                    <td>
+                        {{ link_button('primary', "Attempt",
+                                       'challenges.attempt', id=challenge.id) }}
+                    </td>
+                </tr>
+            {% endfor %}
+    </table>
+{% endblock body %}

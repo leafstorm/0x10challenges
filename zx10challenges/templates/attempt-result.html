@@ -1,0 +1,69 @@
+{# inherits `challenge` and `submission` #}
+
+<p class="lead text-{% if submission.passed %}success{% else %}error{% endif %}">
+    {{ submission.caption }}
+</p>
+
+{% if submission.violations or submission.comments %}
+    <ul>
+        {% for comment in submission.comments %}
+            <li>{{ comment }}</li>
+        {% endfor %}
+        {% for violation in submission.violations %}
+            <li class="text-error">{{ violation }}</li>
+        {% endfor %}
+    </ul>
+{% endif %}
+
+
+<h4>Metrics</h4>
+
+<table class="table table-condensed">
+    {% for metric in challenge.metrics %}
+        <tr>
+            <td>{{ metric.name }}</td>
+            <td>
+                {% if metric.id in submission.metrics %}
+                    {{ metric.format(submission.metrics[metric.id]) }}
+                {% else %}
+                    &mdash;
+                {% endif %}
+            </td>
+        </tr>
+    {% endfor %}
+</table>
+
+
+{% for case in submission.test_cases %}
+    <h4 class="text-{% if submission.passed %}success{% else %}error{% endif %}">
+        {{ case.title }}
+    </h4>
+
+    {% if case.input or case.expected_output or case.actual_output %}
+        <dl>
+            {% if case.input %}
+                <dt>Input:</dt>
+                <dd>{{ case.input }}</dd>
+            {% endif %}
+            {% if case.expected_output %}
+                <dt>Expected:</dt>
+                <dd>{{ case.expected_output }}</dd>
+            {% endif %}
+            {% if case.actual_output %}
+                <dt>Actual:</dt>
+                <dd>{{ case.actual_output }}</dd>
+            {% endif %}
+        </dl>
+    {% endif %}
+
+    {% if case.violations or case.comments %}
+        <ul>
+            {% for comment in case.comments %}
+                <li>{{ comment }}</li>
+            {% endfor %}
+            {% for violation in case.violations %}
+                <li class="text-error">{{ violation }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+{% endfor %}
