@@ -109,9 +109,9 @@ class TestCase(Mapping):
     title = TextField()
     passed = BooleanField(default=False)
 
-    input = TextField()
-    expected_output = TextField()
-    actual_output = TextField()
+    input = DictField()
+    expected_output = DictField()
+    actual_output = DictField()
 
     metrics = DictField()
     comments = ListField(TextField())

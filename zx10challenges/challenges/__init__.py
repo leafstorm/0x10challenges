@@ -9,10 +9,12 @@ This package contains all the challenges available to the site's users.
 """
 from collections import OrderedDict
 from .numeric import Fibonacci
+from .lists import BinarySearch
 
 CHALLENGES = OrderedDict()
 
 for challenge in [
     Fibonacci(),
+    BinarySearch(),
 ]:
     CHALLENGES[challenge.id] = challenge
