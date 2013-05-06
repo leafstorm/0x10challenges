@@ -14,8 +14,7 @@ from flask.ext.wtf import Form
 from wtforms.fields import TextAreaField
 from wtforms.validators import DataRequired, Optional
 from ..challenges import CHALLENGES
-from ..challenges.base import StopEvaluating
-from ..models import Submission
+from ..models import Submission, StopEvaluating
 
 challenges = Blueprint('challenges', __name__)
 
@@ -37,8 +36,10 @@ def attempt(id):
 
     form = AttemptForm()
     if form.validate_on_submit():
-        sub = Submission(challenge_id=id, assembly=form.assembly.data,
-                         notes=form.notes.data)
+        sub = challenge.create_submission()
+        sub.assembly = form.assembly.data
+        sub.notes = form.notes.data
+
         try:
             challenge.evaluate(sub)
         except StopEvaluating:

@@ -1,72 +1,26 @@
 # -*- coding: utf-8 -*-
 """
-zx10challenges.challenges.base
-==============================
-This is the base class that individual challenges inherit from.
+zx10challenges.challenges.common
+================================
+This contains some assembly-related helpers for DCPUs.
 
 :copyright: (C) 2013 Matthew Frazier
 :license:   MIT/X11 -- see the LICENSE file for details
 """
-from abc import ABCMeta, abstractmethod
 from dcpucore.assembler import AssemblyParser, Program
 from dcpucore.emulator import Emulator
 from dcpucore.errors import AssemblyError
-
-class StopEvaluating(BaseException):
-    pass
-
-
-class Metric(object):
-    """
-    This represents a metric that can apply to a program.
-    """
-    def __init__(self, id, name, pattern):
-        self.id = id
-        self.name = name
-        self.pattern = pattern
-
-    def format(self, n):
-        return self.pattern.format(n)
-
+from ..models import Challenge, Metric, StopEvaluating
 
 image_size = Metric("image_size", "Image size", "{} words")
 exec_time = Metric("exec_time", "Execution time", "{} cycles")
 
 
-class Challenge(object):
+class DCPUChallenge(Challenge):
     """
-    This is the base class that each challenge inherits from.
+    This is a challenge class extended with some helpers for assembling
+    and testing DCPU assembly code.
     """
-    __metaclass__ = ABCMeta
-
-    #: The ID of this challenge. This should be unique, and is used to
-    #: look up the challenge from the URL etc.
-    id = None
-
-    #: The title of this challenge.
-    title = None
-
-    #: A brief, one-imperative-sentence description of this challenge.
-    objective = None
-
-    #: A more detailed description which specifies exactly what the challenge
-    #: is graded on.
-    spec = None
-
-    #: The metrics that the user's program will be evaluated on.
-    metrics = ()
-
-    @abstractmethod
-    def evaluate(self, submission):
-        """
-        This accepts a user's submission, evaluates it, and fills out the
-        report fields.
-
-        :param submission: A `Submission` object with the assembly code and
-                           notes filled in.
-        """
-        pass
-
     def summarize(self, submission):
         if all(case.passed for case in submission.test_cases):
             submission.caption = u"Your program passes all the test cases!"

@@ -6,7 +6,17 @@
 {% block body %}
     <h1>{{ challenge.title }}</h1>
 
-    <p class="lead">{{ challenge.objective }}</p>
+    <div class="row">
+        <div class="span9">
+            <p class="lead">{{ challenge.objective }}</p>
+        </div>
+        <div class="span3">
+            <p class="lead" style="text-align: right;">
+                Challenge version
+                {{ challenge.spec_ver }}.{{ challenge.results_ver }}
+            </p>
+        </div>
+    </div>
 
     <div class="row">
         <div class="span5">
@@ -26,7 +36,9 @@
                     {{ challenge.spec|markdown }}
 
                     <p>
-                        <strong>Your submission will be evaluated on:</strong>
+                        <strong>
+                            Once your program is correct, it will be ranked on:
+                        </strong>
                     </p>
 
                     <ul>
@@ -41,7 +53,7 @@
                     {% if submission is none %}
                         <p>
                             Once you've finished your code, click
-                            &ldquo;Submit&rdquo; to see the results.
+                            &ldquo;Test&rdquo; to see the results.
                         </p>
                     {% else %}
                         {% include "attempt-result.html" %}
@@ -67,7 +79,7 @@
                 {{ field_errors(form.notes) }}
 
                 <div class="form-actions">
-                    {{ submit_button('primary', "Submit") }}
+                    {{ submit_button('primary btn-large', "Test") }}
                 </div>
             {% endcall %}
         </div>

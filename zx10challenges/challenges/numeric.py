@@ -8,14 +8,16 @@ Challenges related to number processing and the like.
 :license:   MIT/X11 -- see the LICENSE file for details
 """
 from textwrap import dedent
-from .base import Challenge, image_size, exec_time
+from .common import DCPUChallenge, image_size, exec_time
 from ..models import TestCase
 
 def hex_list(numbers):
     return u", ".join(u"{:#06x}".format(n) for n in numbers)
 
-class Fibonacci(Challenge):
+
+class Fibonacci(DCPUChallenge):
     id = "fibonacci"
+    version = (1, 1)
     title = "Fibonacci"
     objective = "Generate the Fibonacci numbers up to 0x10000."
 
