@@ -35,14 +35,17 @@
                      class="tab-pane{% if submission is none %} active{% endif %}">
                     {{ challenge.spec|markdown }}
 
+                    <h4>Metrics</h4>
+
                     <p>
-                        <strong>
-                            Once your program is correct, it will be ranked on:
-                        </strong>
+                        Once your program is correct, it will be ranked on:
                     </p>
 
                     <ul>
                         {% for metric in challenge.metrics %}
+                            <li>{{ metric.name }}</li>
+                        {% endfor %}
+                        {% for metric in challenge.case_metrics %}
                             <li>{{ metric.name }}</li>
                         {% endfor %}
                     </ul>

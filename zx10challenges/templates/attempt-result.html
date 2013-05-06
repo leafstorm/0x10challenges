@@ -1,69 +1,72 @@
 {# inherits `challenge` and `submission` #}
 
-<p class="lead text-{% if submission.passed %}success{% else %}error{% endif %}">
+{%- from "_utils.html" import success -%}
+
+{### Macros ###}
+
+{%- macro show_notes_and_metrics (sub_or_case, metrics) -%}
+    <table class="table table-condensed">
+        {% for comment in sub_or_case.comments %}
+            <tr>
+                <td colspan="2">{{ comment }}</td>
+            </tr>
+        {% endfor %}
+        {% for violation in sub_or_case.violations %}
+            <tr>
+                <td colspan="2" class="text-error">{{ violation }}</td>
+            </tr>
+        {% endfor %}
+        {% for metric in metrics %}
+            <tr>
+                <td>{{ metric.name }}</td>
+                <td>
+                    {% if metric.id in sub_or_case.metrics %}
+                        {{ metric.format(sub_or_case.metrics[metric.id]) }}
+                    {% else %}
+                        &mdash;
+                    {% endif %}
+                </td>
+            </tr>
+        {% endfor %}
+    </table>
+{%- endmacro -%}
+
+
+{### Actual text ###}
+
+<p class="lead text-{{ success(submission.passed) }}">
     {{ submission.caption }}
 </p>
 
-{% if submission.violations or submission.comments %}
-    <ul>
-        {% for comment in submission.comments %}
-            <li>{{ comment }}</li>
-        {% endfor %}
-        {% for violation in submission.violations %}
-            <li class="text-error">{{ violation }}</li>
-        {% endfor %}
-    </ul>
-{% endif %}
-
-
-<h4>Metrics</h4>
-
-<table class="table table-condensed">
-    {% for metric in challenge.metrics %}
-        <tr>
-            <td>{{ metric.name }}</td>
-            <td>
-                {% if metric.id in submission.metrics %}
-                    {{ metric.format(submission.metrics[metric.id]) }}
-                {% else %}
-                    &mdash;
-                {% endif %}
-            </td>
-        </tr>
-    {% endfor %}
-</table>
+{{ show_notes_and_metrics(submission.metrics, challenge.metrics) }}
 
 
 {% for case in submission.test_cases %}
-    <h4 class="text-{% if submission.passed %}success{% else %}error{% endif %}">
+    <hr>
+
+    <h4 class="text-{{ success(case.passed) }}">
         {{ case.title }}
     </h4>
 
-    {% if case.input or case.expected_output or case.actual_output %}
-        <dl>
-            {% if case.input %}
-                <dt>Input:</dt>
-                <dd>{{ case.input }}</dd>
-            {% endif %}
-            {% if case.expected_output %}
-                <dt>Expected:</dt>
-                <dd>{{ case.expected_output }}</dd>
-            {% endif %}
-            {% if case.actual_output %}
-                <dt>Actual:</dt>
-                <dd>{{ case.actual_output }}</dd>
-            {% endif %}
-        </dl>
-    {% endif %}
+    <div>
+        {% if case.input or case.expected_output or
+              case.actual_output %}
+            <dl>
+                {% if case.input %}
+                    <dt>Input:</dt>
+                    <dd>{{ case.input }}</dd>
+                {% endif %}
+                {% if case.expected_output %}
+                    <dt>Expected:</dt>
+                    <dd>{{ case.expected_output }}</dd>
+                {% endif %}
+                {% if case.actual_output %}
+                    <dt>Actual:</dt>
+                    <dd>{{ case.actual_output }}</dd>
+                {% endif %}
+            </dl>
+        {% endif %}
 
-    {% if case.violations or case.comments %}
-        <ul>
-            {% for comment in case.comments %}
-                <li>{{ comment }}</li>
-            {% endfor %}
-            {% for violation in case.violations %}
-                <li class="text-error">{{ violation }}</li>
-            {% endfor %}
-        </ul>
-    {% endif %}
+        {{ show_notes_and_metrics(case, challenge.case_metrics) }}
+    </div>
 {% endfor %}

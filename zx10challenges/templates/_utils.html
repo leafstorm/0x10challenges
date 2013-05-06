@@ -30,3 +30,8 @@
         {{ text }}
     </button>
 {%- endmacro %}
+
+
+{% macro success (v) -%}
+    {% if v %}success{% else %}error{% endif %}
+{%- endmacro %}

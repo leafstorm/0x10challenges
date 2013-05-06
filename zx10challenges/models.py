@@ -62,6 +62,9 @@ class Challenge(object):
     #: The metrics that the user's program will be evaluated on.
     metrics = ()
 
+    #: The metrics that individual test cases are evaluated on.
+    case_metrics = ()
+
     def create_submission(self):
         """
         Creates a blank submission object for this challenge.
