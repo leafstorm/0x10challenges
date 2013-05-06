@@ -72,12 +72,12 @@
                 {{ form.hidden_tag() }}
 
                 {{ form.assembly }}
-                <div id="assembly-editor" style="width: 100%; height: 20em;"></div>
+                <div id="assembly-editor" style="width: 100%; height: 30em;"></div>
 
                 {{ field_errors(form.assembly) }}
 
                 {{ form.notes.label }}
-                {{ form.notes(rows=5, style="width: 100%;") }}
+                {{ form.notes(rows=4, style="width: 100%;") }}
 
                 {{ field_errors(form.notes) }}
 

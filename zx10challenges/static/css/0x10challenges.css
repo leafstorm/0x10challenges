@@ -1,0 +1,18 @@
+dl.case-io {
+    margin-top: 0;
+    margin-bottom: 10px;
+}
+
+.dl-horizontal.case-io dt {
+    width: 100px;
+    font-weight: normal;
+}
+
+.dl-horizontal.case-io dd {
+    margin-left: 115px;
+    font-family: Menlo, Monaco, Consolas, "Courier New", monospace;
+}
+
+table.table-flush-left td:first-child {
+    padding-left: 0;
+}

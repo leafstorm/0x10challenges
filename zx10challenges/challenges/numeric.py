@@ -44,7 +44,7 @@ class Fibonacci(DCPUChallenge):
         end_pc = last_inst.offset + last_inst.size
 
         test_case = TestCase(title=u"Fibonacci numbers")
-        test_case.expected_output = hex_list(fibos)
+        test_case.expected_output["List at 0x1000"] = hex_list(fibos)
 
         emu = self.create_emulator(image)
         completed = self.run_until(emu, end_pc)
@@ -57,7 +57,7 @@ class Fibonacci(DCPUChallenge):
                 actual_fibos.append(emu.memory[offset])
                 offset += 1
 
-            test_case.actual_output = hex_list(actual_fibos)
+            test_case.actual_output["List at 0x1000"] = hex_list(actual_fibos)
             test_case.passed = fibos == actual_fibos
         else:
             test_case.passed = False

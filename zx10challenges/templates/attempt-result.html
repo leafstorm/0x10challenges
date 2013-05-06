@@ -4,8 +4,21 @@
 
 {### Macros ###}
 
+{%- macro show_case_io_part (title, pairs) -%}
+    {% if pairs %}
+        <h5 style="margin-bottom: 0;">{{ title }}:</h5>
+        <dl class="dl-horizontal case-io">
+            {% for key, value in pairs|items_sorted %}
+                <dt>{{ key }}:</dt>
+                <dd>{{ value }}</dd>
+            {% endfor %}
+        </dl>
+    {% endif %}
+{%- endmacro -%}
+
+
 {%- macro show_notes_and_metrics (sub_or_case, metrics) -%}
-    <table class="table table-condensed">
+    <table class="table table-condensed table-flush-left">
         {% for comment in sub_or_case.comments %}
             <tr>
                 <td colspan="2">{{ comment }}</td>
@@ -38,34 +51,18 @@
     {{ submission.caption }}
 </p>
 
-{{ show_notes_and_metrics(submission.metrics, challenge.metrics) }}
+{{ show_notes_and_metrics(submission, challenge.metrics) }}
 
 
 {% for case in submission.test_cases %}
-    <hr>
-
     <h4 class="text-{{ success(case.passed) }}">
         {{ case.title }}
     </h4>
 
-    <div>
-        {% if case.input or case.expected_output or
-              case.actual_output %}
-            <dl>
-                {% if case.input %}
-                    <dt>Input:</dt>
-                    <dd>{{ case.input }}</dd>
-                {% endif %}
-                {% if case.expected_output %}
-                    <dt>Expected:</dt>
-                    <dd>{{ case.expected_output }}</dd>
-                {% endif %}
-                {% if case.actual_output %}
-                    <dt>Actual:</dt>
-                    <dd>{{ case.actual_output }}</dd>
-                {% endif %}
-            </dl>
-        {% endif %}
+    <div style="margin-left: 10px;">
+        {{ show_case_io_part("Input", case.input) }}
+        {{ show_case_io_part("Expected output", case.expected_output) }}
+        {{ show_case_io_part("Actual output", case.actual_output) }}
 
         {{ show_notes_and_metrics(case, challenge.case_metrics) }}
     </div>

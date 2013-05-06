@@ -44,4 +44,10 @@ def create_app(config=None, extras=None):
         options.setdefault('extensions', ['extra'])
         return Markup(markdown(text, **options))
     
+    @app.template_filter('items_sorted')
+    def items_sorted_filter(d):
+        items = d.items()
+        items.sort(key=lambda (k, v): (len(k), k))
+        return items
+
     return app
