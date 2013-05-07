@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+# bin/post_compile
+# This is a Heroku post-compile hook.
+# I'd prefer for this to live in the heroku/ directory, but the buildpack
+# is hard-coded to look for it here.
+
+# This works around the fact that dcpucore is currently under active
+# development, by forcing pip to reinstall it every time new code is pushed.
+# This isn't an ideal solution. I would prefer a requirements.txt file
+# option like --constantly-bleeding-edge that makes pip redownload a
+# dependency all the time, but that doesn't exist yet.
+/app/.heroku/python/bin/pip uninstall -y dcpucore
+/app/.heroku/python/bin/pip install git+https://github.com/leafstorm/dcpucore.git

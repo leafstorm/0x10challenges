@@ -3,5 +3,5 @@ Flask-CouchDB==0.2.1
 Flask-Script==0.5.3
 Flask-WTF==0.8.3
 Markdown==2.3.1
-git+https://github.com/leafstorm/dcpucore.git@863c7c04
+git+https://github.com/leafstorm/dcpucore.git
 gunicorn==0.17.4
