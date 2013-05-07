@@ -19,9 +19,15 @@
                     0x10<sup>challenges</sup>
                 </a>
                 <ul class="nav">
-                    <li><a href="#">Challenges</a></li>
-                    <li><a href="#">Records</a></li>
-                    <li><a href="#">Documentation</a></li>
+                    <li>
+                        <a href="{{ url_for('accounts.set_nick') }}">
+                            {% if 'nickname' in session %}
+                                Nickname: {{ session.nickname }}
+                            {% else %}
+                                Hey! Set a nickname!
+                            {% endif %}
+                        </a>
+                    </li>
                 </ul>
             </div>
         </div>

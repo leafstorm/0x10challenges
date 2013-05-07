@@ -12,3 +12,10 @@ SECRET_KEY = os.environ['SECRET_KEY']
 
 #: The name of the cookie used to store user sessions.
 SESSION_COOKIE_NAME = '0x10challenges_session'
+
+#: The server containing this installation's CouchDB database. If
+#: authentication is necessary, just put it in the URL.
+COUCHDB_SERVER = os.environ['COUCHDB_SERVER']
+
+#: The name of the database to use on COUCHDB_SERVER.
+COUCHDB_DATABASE = os.environ['COUCHDB_DATABASE']

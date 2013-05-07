@@ -1,5 +1,6 @@
 {% extends "layout.html" %}
-{% from "_utils.html" import form_tag, field_errors, submit_button %}
+{% from "_utils.html" import form_tag, field_errors, submit_button,
+                             dismiss_button %}
 
 {% set title = challenge.title %}
 
@@ -83,7 +84,43 @@
 
                 <div class="form-actions">
                     {{ submit_button('primary btn-large', "Test") }}
+                    {% if can_submit %}
+                        <a href="#submit-modal" data-toggle="modal"
+                           class="btn btn-success btn-large">
+                            Submit!
+                        </a>
+                    {% endif %}
                 </div>
+
+                {% if can_submit %}
+                    <div id="submit-modal" class="modal hide fade">
+                        <div class="modal-header">
+                            <h3>Submit</h3>
+                        </div>
+
+                        <div class="modal-body">
+                            <p>
+                                This will post your metrics on the assignment
+                                leaderboard. However, we'll have to check
+                                your submission first to make sure it's
+                                valid and not plagiarized.
+                            </p>
+
+                            <label class="checkbox">
+                                {{ form.publish() }}
+                                Publish my code on the leaderboard
+                            </label>
+                        </div>
+
+                        <div class="modal-footer">
+                            {{ dismiss_button(none, "Cancel") }}
+                            {{ submit_button('success',
+                                "Submit!",
+                                'action', 'submit'
+                            ) }}
+                        </div>
+                    </div>
+                {% endif %}
             {% endcall %}
         </div>
     </div>

@@ -20,3 +20,10 @@ SECRET_KEY = 'Not actually secret'
 
 #: The name of the cookie used to store user sessions.
 SESSION_COOKIE_NAME = '0x10challenges_session'
+
+#: The server containing this installation's CouchDB database. If
+#: authentication is necessary, just put it in the URL.
+COUCHDB_SERVER = 'http://localhost:5984/'
+
+#: The name of the database to use on COUCHDB_SERVER.
+COUCHDB_DATABASE = 'zx10challenges'

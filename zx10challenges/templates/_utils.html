@@ -24,8 +24,17 @@
 {%- endmacro %}
 
 
-{% macro submit_button (type, text) -%}
+{% macro submit_button (type, text, name, value) -%}
     <button type="submit"
+            {%- if name %} name="{{ name }}" value="{{ value }}"{% endif %}
+            class="btn{% if type is not none %} btn-{{ type }}{% endif %}">
+        {{ text }}
+    </button>
+{%- endmacro %}
+
+
+{% macro dismiss_button (type, text, name, value) -%}
+    <button type="button" data-dismiss="modal"
             class="btn{% if type is not none %} btn-{{ type }}{% endif %}">
         {{ text }}
     </button>

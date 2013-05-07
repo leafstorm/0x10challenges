@@ -1,0 +1,25 @@
+{% extends "layout.html" %}
+{% from "_utils.html" import form_tag, field_errors, submit_button %}
+
+{% set title = "Set Nickname" %}
+
+{% block body %}
+    <div class="row">
+        <div class="offset3 span6">
+            <h1>Set Nickname</h1>
+
+            {% call form_tag('accounts.set_nick') %}
+                {{ form.hidden_tag() }}
+
+                {{ form.nickname.label }}
+                {{ form.nickname() }}
+
+                {{ field_errors(form.nickname) }}
+
+                <div class="form-actions">
+                    {{ submit_button('primary', "Change") }}
+                </div>
+            {% endcall %}
+        </div>
+    </div>
+{% endblock body %}

@@ -157,6 +157,14 @@ class Submission(Document):
 
     # Control data for the hall of fame
     submitted = BooleanField(default=False)
-    submit_date = DateTimeField()
     published = BooleanField(default=False)
+    submit_date = DateTimeField()
+    approved = BooleanField(default=False)
     admin_notes = TextField()
+
+    def submit(self):
+        self.submitted = True
+        self.submit_date = datetime.datetime.utcnow()
+
+    def approve(self):
+        self.approved = True
