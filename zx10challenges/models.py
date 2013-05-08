@@ -8,11 +8,12 @@ in code, others are stored in a CouchDB database.
 :copyright: (C) 2013 Matthew Frazier
 :license:   MIT/X11 -- see the LICENSE file for details
 """
+import datetime
 from abc import ABCMeta, abstractmethod
 from flask.ext.couchdb import (CouchDBManager, Document, Mapping,
                                TextField, IntegerField, BooleanField,
                                DecimalField, DateTimeField,
-                               DictField, ListField)
+                               DictField, ListField, ViewField)
 
 
 manager = CouchDBManager(auto_sync=False)
@@ -72,6 +73,24 @@ class Challenge(object):
         return Submission(challenge_id=self.id, spec_ver=self.version[0],
                           results_ver=self.version[1])
 
+    def get_leaderboards(self):
+        """
+        Gets all the leaderboards for a challenge.
+        """
+        boards = []
+        for metric in self.metrics:
+            low_key = [self.id, self.spec_ver, self.results_ver, metric.id]
+            high_key = low_key + [{}]
+            if metric.descends:
+                options = {'startkey': high_key, 'endkey': low_key,
+                           'descending': True}
+            else:
+                options = {'startkey': low_key, 'endkey': high_key,
+                           'descending': False}
+            subs = Submission.approved_by_metric(**options)
+            boards.append((metric, subs))
+        return boards
+
     @abstractmethod
     def evaluate(self, submission):
         """
@@ -94,12 +113,13 @@ class StopEvaluating(BaseException):
 
 class Metric(object):
     """
-    This represents a metric that can apply to a program.
+    This represents a metric that a submission or test case can be ranked on.
     """
-    def __init__(self, id, name, pattern):
+    def __init__(self, id, name, pattern, descends=False):
         self.id = id
         self.name = name
         self.pattern = pattern
+        self.descends = descends
 
     def format(self, n):
         return self.pattern.format(n)
@@ -168,3 +188,34 @@ class Submission(Document):
 
     def approve(self):
         self.approved = True
+
+    # Views
+    all_by_challenge = ViewField('submissions', '''\
+        function (doc) {
+            if (doc.doc_type == 'submission') {
+                emit([doc.challenge_id, doc.spec_ver, doc.results_ver,
+                      doc.submit_date], null);
+            }
+        }''', include_docs=True)
+
+    approved_by_metric = ViewField('submissions', '''\
+        function (doc) {
+            if (doc.doc_type == 'submission' && doc.approved) {
+                for (var metric_id in doc.metrics) {
+                    if (doc.metrics.hasOwnProperty(metric_id)) {
+                        emit([doc.challenge_id, doc.spec_ver, doc.results_ver,
+                              metric_id, doc.metrics[metric_id]], null);
+                    }
+                }
+            }
+        }''', include_docs=True)
+
+    pending = ViewField('submissions', '''\
+        function (doc) {
+            if (doc.doc_type == 'submission' && !doc.approved) {
+                emit([doc.submit_date], null);
+            }
+        }''', include_docs=True)
+
+
+manager.add_document(Submission)

@@ -29,6 +29,11 @@
                 <li{% if submission is not none %} class="active"{% endif %}>
                     <a href="#challenge-results" data-toggle="tab">Results</a>
                 </li>
+                <li>
+                    <a href="{{ url_for('challenges.leaderboard', id=challenge.id) }}">
+                        Leaderboard
+                    </a>
+                </li>
             </ul>
 
             <div class="tab-content">

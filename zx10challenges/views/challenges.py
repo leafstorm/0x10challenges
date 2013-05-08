@@ -9,7 +9,7 @@ submissions and testing them.
 :license:   MIT/X11 -- see the LICENSE file for details
 """
 import os
-from flask import Blueprint, abort, request, render_template, session
+from flask import Blueprint, abort, request, render_template, flash, session
 from flask.ext.wtf import Form
 from wtforms.fields import TextAreaField, BooleanField
 from wtforms.validators import DataRequired, Optional
@@ -61,3 +61,15 @@ def attempt(id):
 
     return render_template("attempt.html", challenge=challenge, form=form,
                            submission=sub, can_submit=can_submit)
+
+
+@challenges.route('/challenge/<id>/leaderboard')
+def leaderboard(id):
+    if id not in CHALLENGES:
+        abort(404)
+    challenge = CHALLENGES[id]
+
+    boards = challenge.get_leaderboards()
+
+    return render_template("leaderboard.html", challenge=challenge,
+                           boards=boards)
