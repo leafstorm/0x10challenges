@@ -10,6 +10,7 @@ This is the main entry point for 0x10challenges. It contains the app factory.
 from flask import Flask, Markup
 from markdown import markdown
 from .models import manager
+from .login import login_manager
 from .views import BLUEPRINTS
 
 def create_app(config=None, extras=None):
@@ -32,7 +33,9 @@ def create_app(config=None, extras=None):
     # setup extensions
     manager.setup(app)
     manager.sync(app)
-    
+
+    login_manager.init_app(app)
+
     for blueprint in BLUEPRINTS:
         if isinstance(blueprint, tuple):
             app.register_blueprint(blueprint[0], url_prefix=prefix[1])

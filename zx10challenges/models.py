@@ -14,6 +14,7 @@ from flask.ext.couchdb import (CouchDBManager, Document, Mapping,
                                TextField, IntegerField, BooleanField,
                                DecimalField, DateTimeField,
                                DictField, ListField, ViewField)
+from flask.ext.login import UserMixin
 
 
 manager = CouchDBManager(auto_sync=False)
@@ -151,12 +152,11 @@ class Submission(Document):
         return (self.spec_ver, self.results_ver)
 
     @challenge_version.setter
-    def _set_challenge_version(self, version):
+    def challenge_version(self, version):
         if len(version) != 2:
             raise TypeError("Version should be a 2-tuple")
         self.spec_ver = version[0]
         self.results_ver = version[1]
-    del _set_challenge_version
 
     # Submitter metadata
     user_id = TextField()
@@ -179,8 +179,26 @@ class Submission(Document):
     submitted = BooleanField(default=False)
     published = BooleanField(default=False)
     submit_date = DateTimeField()
+
+    # Review information
     approved = BooleanField(default=False)
+    needs_review = BooleanField(default=True)
+    review_date = DateTimeField()
     admin_notes = TextField()
+
+    @property
+    def user(self):
+        if self.user_id:
+            return User.load(self.user_id)
+        else:
+            return None
+
+    @user.setter
+    def user(self, user):
+        self.user_id = user.id
+        self.user_nickname = user.nickname
+        if user.is_muted:
+            self.reject()
 
     def submit(self):
         self.submitted = True
@@ -188,6 +206,18 @@ class Submission(Document):
 
     def approve(self):
         self.approved = True
+        self.needs_review = False
+        self.review_date = datetime.datetime.utcnow()
+
+    def reject(self):
+        self.approved = False
+        self.needs_review = False
+        self.review_date = datetime.datetime.utcnow()
+
+    # Query methods
+    @classmethod
+    def get_review_queue(cls):
+        return cls.review_queue().rows
 
     # Views
     all_by_challenge = ViewField('submissions', '''\
@@ -210,12 +240,75 @@ class Submission(Document):
             }
         }''', include_docs=True)
 
-    pending = ViewField('submissions', '''\
+    review_queue = ViewField('submissions', '''\
         function (doc) {
-            if (doc.doc_type == 'submission' && !doc.approved) {
-                emit([doc.submit_date], null);
+            if (doc.doc_type == 'submission' && doc.needs_review) {
+                emit(doc.submit_date, null);
             }
         }''', include_docs=True)
 
 
 manager.add_document(Submission)
+
+
+class User(Document, UserMixin):
+    """
+    Contains information about a registered user of the site.
+    """
+    doc_type = 'user'
+
+    #: The user's email.
+    email = TextField()
+
+    #: The nickname that the user has chosen for themself.
+    nickname = TextField()
+
+    #: The date that the user first joined on.
+    join_date = DateTimeField(default=datetime.datetime.utcnow)
+
+    #: If this is `True`, the user has been disabled.
+    #: This prevents them from logging in.
+    #: This is intended for defunct accounts.
+    is_disabled = BooleanField(default=False)
+
+    #: If this is `True`, the user has been muted.
+    #: If you are muted, your submissions will automatically be denied.
+    #: This is intended for spambots and harassers.
+    is_muted = BooleanField(default=False)
+
+    #: If this is `True`, the user is an administrator.
+    is_admin = BooleanField(default=False)
+
+    @classmethod
+    def create(cls, email):
+        nickname = email[:email.index("@")]
+        return cls(email=email, nickname=nickname)
+
+    @classmethod
+    def get_by_email(cls, email):
+        results = cls.by_email[email]
+        if not len(results):
+            return None
+        else:
+            return results.rows[0]
+
+    @classmethod
+    def get_or_create(cls, email):
+        user = cls.get_by_email(email)
+        if user is None:
+            user = cls.create(email)
+            user.store()
+        return user
+
+    def is_active(self):
+        return not self.is_disabled
+
+    by_email = ViewField('users', '''\
+        function (doc) {
+            if (doc.doc_type == 'user') {
+                emit(doc.email, null);
+            }
+        }''', include_docs=True)
+
+manager.add_document(User)
+

@@ -10,6 +10,7 @@ submissions and testing them.
 """
 import os
 from flask import Blueprint, abort, request, render_template, flash, session
+from flask.ext.login import current_user
 from flask.ext.wtf import Form
 from wtforms.fields import TextAreaField, BooleanField
 from wtforms.validators import DataRequired, Optional
@@ -46,10 +47,10 @@ def attempt(id):
         except StopEvaluating:
             pass
 
-        can_submit = 'nickname' in session and sub.passed
+        can_submit = current_user.is_authenticated()
 
         if can_submit and request.form.get('action') == 'submit':
-            sub.user_nickname = session['nickname']
+            sub.user = current_user
             sub.published = form.publish.data
             sub.submit()
             sub.store()
@@ -73,3 +74,4 @@ def leaderboard(id):
 
     return render_template("leaderboard.html", challenge=challenge,
                            boards=boards)
+

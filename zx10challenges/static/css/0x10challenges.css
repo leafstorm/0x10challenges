@@ -16,3 +16,8 @@ dl.case-io {
 table.table-flush-left td:first-child {
     padding-left: 0;
 }
+
+#assembly-editor {
+    font-size: 14px;
+}
+

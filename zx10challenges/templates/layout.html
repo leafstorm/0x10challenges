@@ -18,16 +18,44 @@
                 <a class="brand" href="{{ url_for('challenges.index') }}">
                     0x10<sup>challenges</sup>
                 </a>
-                <ul class="nav">
-                    <li>
-                        <a href="{{ url_for('accounts.set_nick') }}">
-                            {% if 'nickname' in session %}
-                                Nickname: {{ session.nickname }}
-                            {% else %}
-                                Hey! Set a nickname!
-                            {% endif %}
-                        </a>
-                    </li>
+                <ul class="nav pull-right">
+                    {% if current_user.is_authenticated() %}
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle"
+                                        data-toggle="dropdown">
+                                {% if current_user.is_admin %}
+                                    <span class="icon-star"></span>
+                                {% endif %}
+                                {{ current_user.nickname }}
+                                <b class="caret"></b>
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li class="disabled">
+                                    <a>
+                                        <span class="icon-envelope"></span>
+                                        {{ current_user.email }}
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="{{ url_for('accounts.set_nick') }}">
+                                        Set Nickname
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="#" class="persona-logout-button">
+                                        Sign Out
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                    {% else %}
+                        <li>
+                            <a href="#" class="persona-login-button">
+                                <img src="{{ url_for('static', filename='img/persona-sign-in.png') }}"
+                                     alt="Sign In">
+                            </a>
+                        </li>
+                    {% endif %}
                 </ul>
             </div>
         </div>
@@ -57,5 +85,11 @@
 
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
     <script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
+    <script src="https://login.persona.org/include.js"></script>
+    <script>
+        {% include "accounts/persona-login.js" %}
+    </script>
     {% block scripts %}{% endblock scripts %}
 </body>
+</html>
+
