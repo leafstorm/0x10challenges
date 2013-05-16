@@ -1,8 +1,50 @@
-{# inherits `challenge` and `submission` #}
-
 {%- from "_utils.html" import success -%}
 
-{### Macros ###}
+{### Challenges and Specs ###}
+
+{%- macro challenge_header (challenge) -%}
+    <h1>{{ challenge.title }}</h1>
+
+    <div class="row">
+        <div class="span9">
+            <p class="lead">{{ challenge.objective }}</p>
+        </div>
+        <div class="span3">
+            <p class="lead" style="text-align: right;">
+                Challenge version
+                {{ challenge.spec_ver }}.{{ challenge.results_ver }}
+            </p>
+        </div>
+    </div>
+{%- endmacro -%}
+
+
+
+{### Macros for Results ###}
+
+{%- macro show_results (challenge, submission) -%}
+    <p class="lead text-{{ success(submission.passed) }}">
+        {{ submission.caption }}
+    </p>
+
+    {{ show_notes_and_metrics(submission, challenge.metrics) }}
+
+
+    {% for case in submission.test_cases %}
+        <h4 class="text-{{ success(case.passed) }}">
+            {{ case.title }}
+        </h4>
+
+        <div style="margin-left: 10px;">
+            {{ show_case_io_part("Input", case.input) }}
+            {{ show_case_io_part("Expected output", case.expected_output) }}
+            {{ show_case_io_part("Actual output", case.actual_output) }}
+
+            {{ show_notes_and_metrics(case, challenge.case_metrics) }}
+        </div>
+    {% endfor %}
+{%- endmacro -%}
+
 
 {%- macro show_case_io_part (title, pairs) -%}
     {% if pairs %}
@@ -44,26 +86,3 @@
     </table>
 {%- endmacro -%}
 
-
-{### Actual text ###}
-
-<p class="lead text-{{ success(submission.passed) }}">
-    {{ submission.caption }}
-</p>
-
-{{ show_notes_and_metrics(submission, challenge.metrics) }}
-
-
-{% for case in submission.test_cases %}
-    <h4 class="text-{{ success(case.passed) }}">
-        {{ case.title }}
-    </h4>
-
-    <div style="margin-left: 10px;">
-        {{ show_case_io_part("Input", case.input) }}
-        {{ show_case_io_part("Expected output", case.expected_output) }}
-        {{ show_case_io_part("Actual output", case.actual_output) }}
-
-        {{ show_notes_and_metrics(case, challenge.case_metrics) }}
-    </div>
-{% endfor %}

@@ -21,7 +21,8 @@ challenges = Blueprint('challenges', __name__)
 
 @challenges.route('/')
 def index():
-    return render_template("index.html", challenges=CHALLENGES.values())
+    return render_template("challenges/index.html",
+                           challenges=CHALLENGES.values())
 
 
 class AttemptForm(Form):
@@ -60,7 +61,8 @@ def attempt(id):
         sub = None
         can_submit = False
 
-    return render_template("attempt.html", challenge=challenge, form=form,
+    return render_template("challenges/attempt.html",
+                           challenge=challenge, form=form,
                            submission=sub, can_submit=can_submit)
 
 
@@ -72,6 +74,6 @@ def leaderboard(id):
 
     boards = challenge.get_leaderboards()
 
-    return render_template("leaderboard.html", challenge=challenge,
-                           boards=boards)
+    return render_template("challenges/leaderboard.html",
+                           challenge=challenge, boards=boards)
 
