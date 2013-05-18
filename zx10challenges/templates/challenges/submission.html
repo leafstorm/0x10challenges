@@ -40,6 +40,22 @@
 
                 <div id="challenge-results"
                      class="tab-pane active">
+                    {% if submission.comments_for_submitter and show_status %}
+                        <h4>Administrator's comments (for you)</h4>
+
+                        {{ submission.comments_for_submitter|markdown }}
+                    {% endif %}
+
+                    {% if submission.comments_for_public %}
+                        <h4>
+                            Administrator's comments
+                            {% if show_status %} (for public){% endif %}
+                        </h4>
+
+                        {{ submission.comments_for_public|markdown }}
+                    {% endif %}
+                        
+
                     {{ show_results(challenge, submission) }}
                 </div>
             </div>

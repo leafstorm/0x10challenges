@@ -50,10 +50,13 @@
                              id=submission.id) %}
                 {{ form.hidden_tag() }}
 
-                {{ form.admin_notes.label }}
-                {{ form.admin_notes(rows=4, style="width: 100%;") }}
+                {{ form.comments_for_submitter.label }}
+                {{ form.comments_for_submitter(rows=4, style="width: 100%;") }}
+                {{ field_errors(form.comments_for_submitter) }}
 
-                {{ field_errors(form.admin_notes) }}
+                {{ form.comments_for_public.label }}
+                {{ form.comments_for_public(rows=4, style="width: 100%;") }}
+                {{ field_errors(form.comments_for_public) }}
 
                 <div>
                     {% for action in form.decision %}

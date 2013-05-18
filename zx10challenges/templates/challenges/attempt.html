@@ -71,11 +71,6 @@
 
                 {{ field_errors(form.assembly) }}
 
-                {{ form.notes.label }}
-                {{ form.notes(rows=4, style="width: 100%;") }}
-
-                {{ field_errors(form.notes) }}
-
                 <div class="form-actions">
                     {{ submit_button('primary btn-large', "Test") }}
                     {% if can_submit %}

@@ -12,7 +12,7 @@
             <tr>
                 <th>Challenge</th>
                 <th>Submitted</th>
-                <th colspan="2">Administrator's notes</th>
+                <th colspan="2">Administrator's comments</th>
             </tr>
         </thead>
         <tbody>
@@ -25,8 +25,8 @@
                         {{ submission_details(submission, false, false, true, true, true) }}
                     </td>
                     <td>
-                        {% if submission.admin_notes %}
-                            {{ submission.admin_notes|markdown }}
+                        {% if submission.comments_for_submitter %}
+                            {{ submission.comments_for_submitter|markdown }}
                         {% else %}
                             &mdash;
                         {% endif %}

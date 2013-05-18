@@ -28,7 +28,6 @@ def index():
 
 class AttemptForm(Form):
     assembly =  TextAreaField(u"Assembly Code", validators=[DataRequired()])
-    notes =     TextAreaField(u"Notes", validators=[Optional()])
     publish =   BooleanField(u"Publish Code", validators=[Optional()])
 
 
@@ -42,7 +41,6 @@ def attempt(id):
     if form.validate_on_submit():
         sub = challenge.create_submission()
         sub.assembly = form.assembly.data
-        sub.notes = form.notes.data
 
         try:
             challenge.evaluate(sub)
@@ -132,8 +130,11 @@ DECISIONS = [
 ]
 
 class ReviewForm(Form):
-    admin_notes = TextAreaField(u"Notes", validators=[Optional()])
-    decision    = RadioField(u"Decision", choices=DECISIONS,
+    comments_for_submitter  = TextAreaField(u"Comments for submitter",
+                                            validators=[Optional()])
+    comments_for_public     = TextAreaField(u"Comments for public",
+                                            validators=[Optional()])
+    decision                 = RadioField(u"Decision", choices=DECISIONS,
                              validators=[DataRequired()])
 
 
@@ -157,7 +158,9 @@ def review_submission(id):
 
     form = ReviewForm()
     if form.validate_on_submit():
-        sub.admin_notes = form.admin_notes.data
+        sub.comments_for_submitter = form.comments_for_submitter.data
+        sub.comments_for_public = form.comments_for_public.data
+
         if form.decision.data == u'approve':
             sub.approve()
         else:

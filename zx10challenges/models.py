@@ -164,7 +164,6 @@ class Submission(Document):
 
     # Submission content
     assembly = TextField()
-    notes = TextField()
 
     # Results from evaluating this submission
     passed = BooleanField(default=False)
@@ -184,7 +183,8 @@ class Submission(Document):
     approved = BooleanField(default=False)
     needs_review = BooleanField(default=True)
     review_date = DateTimeField()
-    admin_notes = TextField()
+    comments_for_submitter = TextField()
+    comments_for_public = TextField()
 
     @property
     def user(self):
