@@ -22,6 +22,48 @@
 
 {### Macros for Results ###}
 
+{%- macro submission_details (submission, show_nickname, show_email,
+                              show_time, show_published, show_status) -%}
+    {% if show_nickname %}
+        <span class="icon-user"></span>
+        {{ submission.user_nickname }}<br>
+    {% endif %}
+
+    {% if show_email %}
+        <span class="icon-envelope"></span>
+        {{ submission.user.email }}<br>
+    {% endif %}
+
+    {% if show_time %}
+        <span class="icon-time"></span>
+        {{ submission.submit_date.strftime("%Y/%m/%d %H:%M:%S") }}<br>
+    {% endif %}
+
+    {% if show_published %}
+        {% if submission.published %}
+            <span class="icon-file"></span>
+            Code published<br>
+        {% else %}
+            <span class="icon-eye-close"></span>
+            Code not published<br>
+        {% endif %}
+    {% endif %}
+
+    {% if show_status %}
+        {% if submission.needs_review %}
+            <span class="icon-inbox"></span>
+            Needs review
+        {% elif submission.active %}
+            <span class="icon-ok"></span>
+            Approved
+        {% else %}
+            <span class="icon-ban-circle"></span>
+            Rejected
+        {% endif %}
+    {% endif %}
+{%- endmacro -%}
+
+
 {%- macro show_results (challenge, submission) -%}
     <p class="lead text-{{ success(submission.passed) }}">
         {{ submission.caption }}

@@ -2,17 +2,17 @@
 {% from "challenges/_parts.html" import submission_details %}
 {% from "_utils.html" import link_button %}
 
-{% set title = "Review Queue" %}
+{% set title = "My Submissions" %}
 
 {% block body %}
-    <h1>Review Queue</h1>
+    <h1>My Submissions</h1>
 
     <table class="table table-striped">
         <thead>
             <tr>
                 <th>Challenge</th>
-                <th>Submitter</th>
-                <th colspan="2">Sample</th>
+                <th>Submitted</th>
+                <th colspan="2">Administrator's notes</th>
             </tr>
         </thead>
         <tbody>
@@ -22,16 +22,18 @@
                         {{ submission.challenge_id }}
                     </td>
                     <td>
-                        {{ submission_details(submission, true, true, true, true, false) }}
+                        {{ submission_details(submission, false, false, true, true, true) }}
                     </td>
                     <td>
-                        <pre>
-                            {{- submission.assembly.splitlines()[:3]|join('\n') -}}
-                        </pre>
+                        {% if submission.admin_notes %}
+                            {{ submission.admin_notes|markdown }}
+                        {% else %}
+                            &mdash;
+                        {% endif %}
                     </td>
                     <td style="text-align: right;">
-                        {{ link_button('primary', "Review",
-                                       'challenges.review_submission',
+                        {{ link_button('primary', "View",
+                                       'challenges.submission',
                                        id=submission.id) }}
                     </td>
                 </tr>

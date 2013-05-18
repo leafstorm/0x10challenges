@@ -1,7 +1,7 @@
 {% extends "layout.html" %}
 {% from "challenges/_parts.html" import challenge_header %}
 {% from "_utils.html" import form_tag, field_errors, submit_button,
-                             dismiss_button %}
+                             link_button, dismiss_button %}
 
 {% set title = challenge.title + " Leaderboard" %}
 
@@ -31,18 +31,20 @@
                 <div id="metric-{{ metric.id }}">
                     <h2>{{ metric.name }}</h2>
 
-                    {% if metric.descends %}
-                        <p>(Higher is better)</p>
-                    {% else %}
-                        <p>(Lower is better)</p>
-                    {% endif %}
-
                     <table class="table table-striped">
                         <thead>
                             <tr>
                                 <th></th>
                                 <th>Nickname</th>
-                                <th colspan="2">{{ metric.name }}</th>
+                                <th colspan="2">
+                                    {{ metric.name }}
+
+                                    {% if metric.descends %}
+                                        (higher is better)
+                                    {% else %}
+                                        (lower is better)
+                                    {% endif %}
+                                </th>
                             </tr>
                         </thead>
                         <tbody>
@@ -51,11 +53,17 @@
                                     <td>{{ loop.index }}</td>
                                     <td>{{ sub.user_nickname }}</td>
                                     <td>{{ metric.format(sub.metrics[metric.id]) }}</td>
-                                    <td>
-                                        {% if published %}
-                                            code
+                                    <td style="text-align: right;">
+                                        {% if sub.published %}
+                                            {{ link_button(none, "View code",
+                                                           'challenges.submission',
+                                                           id=sub.id) }}
+                                        {% elif sub.published %}
+                                            {{ link_button(none, "Hidden code",
+                                                           'challenges.submission',
+                                                           id=sub.id) }}
                                         {% else %}
-                                            no code
+                                            No code
                                         {% endif %}
                                     </td>
                                 </tr>

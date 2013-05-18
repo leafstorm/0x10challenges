@@ -3,18 +3,21 @@
                                         submission_details %}
 {% from "_utils.html" import form_tag, field_errors, submit_button %}
 
-{% set title = "Reviewing " ~ challenge.title ~ " Submission" %}
+{% set title = challenge.title ~ " Submission" %}
+{% set show_status = current_user.is_admin or current_user.id == submission.user_id %}
 
 {% block body %}
     {{ challenge_header (challenge) }}
 
     <div class="row">
         <div class="span5">
-            <!-- Spec & Results -->
             <p>
-                {{ submission_details(submission, true, true, true, true, true) }}
+                {{ submission_details(submission,
+                                      true, current_user.is_admin, true,
+                                      show_status, show_status) }}
             </p>
 
+            <!-- Spec & Results -->
             <ul class="nav nav-tabs">
                 <li>
                     <a href="#challenge-spec" data-toggle="tab">Spec</a>
@@ -45,29 +48,6 @@
         <div class="span7">
             <!-- Assembly and Review Form -->
             <pre>{{ submission.assembly }}</pre>
-
-            {% call form_tag('challenges.review_submission',
-                             id=submission.id) %}
-                {{ form.hidden_tag() }}
-
-                {{ form.admin_notes.label }}
-                {{ form.admin_notes(rows=4, style="width: 100%;") }}
-
-                {{ field_errors(form.admin_notes) }}
-
-                <div>
-                    {% for action in form.decision %}
-                        <label class="checkbox inline">
-                            {{ action }}
-                            {{ action.label.text }}
-                        </label>
-                    {% endfor %}
-                </div>
-
-                <div class="form-actions">
-                    {{ submit_button('primary btn-large', "Review") }}
-                </div>
-            {% endcall %}
         </div>
     </div>
 {% endblock body %}

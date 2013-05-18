@@ -228,6 +228,13 @@ class Submission(Document):
             }
         }''', include_docs=True)
 
+    all_by_user = ViewField('submissions', '''\
+        function (doc) {
+            if (doc.doc_type == 'submission') {
+                emit([doc.user_id, doc.submit_date]);
+            }
+        }''', include_docs=True)
+
     approved_by_metric = ViewField('submissions', '''\
         function (doc) {
             if (doc.doc_type == 'submission' && doc.approved) {
@@ -302,6 +309,10 @@ class User(Document, UserMixin):
 
     def is_active(self):
         return not self.is_disabled
+
+    def get_submissions(self):
+        return Submission.all_by_user(startkey=[self.id, {}], endkey=[self.id],
+                                      descending=True).rows
 
     by_email = ViewField('users', '''\
         function (doc) {

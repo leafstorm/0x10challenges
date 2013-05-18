@@ -18,44 +18,56 @@
                 <a class="brand" href="{{ url_for('challenges.index') }}">
                     0x10<sup>challenges</sup>
                 </a>
-                <ul class="nav pull-right">
-                    {% if current_user.is_authenticated() %}
-                        <li class="dropdown">
-                            <a href="#" class="dropdown-toggle"
-                                        data-toggle="dropdown">
-                                {% if current_user.is_admin %}
-                                    <span class="icon-star"></span>
-                                {% endif %}
-                                {{ current_user.nickname }}
-                                <b class="caret"></b>
-                            </a>
-                            <ul class="dropdown-menu">
-                                <li class="disabled">
-                                    <a>
-                                        <span class="icon-envelope"></span>
-                                        {{ current_user.email }}
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="{{ url_for('accounts.set_nick') }}">
-                                        Set Nickname
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="#" class="persona-logout-button">
-                                        Sign Out
-                                    </a>
-                                </li>
-                            </ul>
-                        </li>
-                    {% else %}
+                <ul class="nav">
+                    <li>
+                        <a href="{{ url_for('challenges.index') }}">
+                            Challenges
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ url_for('challenges.my_submissions') }}">
+                            My Submissions
+                        </a>
+                    </li>
+                    {% if current_user.is_admin %}
                         <li>
-                            <a href="#" class="persona-login-button">
-                                <img src="{{ url_for('static', filename='img/persona-sign-in.png') }}"
-                                     alt="Sign In">
+                            <a href="{{ url_for('challenges.review_queue') }}">
+                                Review Queue
                             </a>
                         </li>
                     {% endif %}
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle"
+                                    data-toggle="dropdown">
+                            Documentation
+                            <b class="caret"></b>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li>
+                                <a href="#">
+                                    Introduction
+                                </a>
+                            </li>
+                            <li>
+                                <a href="http://dcpu.com/dcpu-16/">
+                                    DCPU-16 Specification
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#">
+                                    Assembly Language Reference
+                                </a>
+                            </li>
+                            <li>
+                                <a href="http://www.0x10co.de/">
+                                    0x10co.de (Sandbox)
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+                <ul class="nav pull-right">
+                    {% include "accounts/user-menu.html" %}
                 </ul>
             </div>
         </div>

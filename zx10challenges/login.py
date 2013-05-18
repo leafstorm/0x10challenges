@@ -20,6 +20,7 @@ def load_user(userid):
 
 
 class ZXAnonymousUser(AnonymousUser):
+    id = None
     email = None
     nickname = None
     join_date = None
